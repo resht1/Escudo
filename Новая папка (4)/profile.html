@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - EscudoLoader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0f0f1a;
+            --card-bg: #1e1e32;
+            --text-color: #e0e0e0;
+            --secondary-text: #b0b0b0;
+            --border-color: #1e90ff;
+            --accent-color: #1e90ff;
+            --button-bg: #1e90ff;
+            --glow-color: rgba(100, 150, 255, 0.6);
+            --primary-color: #64a6ff;
+            --secondary-color: #4b7bff;
+            --yellow-color: #ffd700;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(45deg, #0f0f1a, #1c1c2a, #0f0f1a);
+            background-size: 400%;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 80px 20px 40px;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 60px;
+            background: rgba(20, 20, 40, 0.9);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px var(--glow-color);
+        }
+
+        .navbar .logo .logo-icon {
+            font-size: 34px;
+            margin-right: 12px;
+            color: var(--secondary-color);
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .navbar .logo .logo-icon:hover {
+            transform: rotate(360deg);
+            color: var(--primary-color);
+        }
+
+        .navbar .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 25px;
+            font-size: 16px;
+            font-weight: 400;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .navbar .hamburger {
+            display: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        .main-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-grow: 1;
+            margin-top: 60px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.8s ease-out forwards;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sidebar-left {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-left:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #fff;
+            position: relative;
+            box-shadow: 0 0 10px var(--accent-color);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .avatar-input {
+            display: none;
+        }
+
+        .profile-info h1 {
+            font-size: 24px;
+            color: var(--text-color);
+        }
+
+        .role-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        .role-row,
+        .prefix-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .role-block i {
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+
+        .role-block .role-label,
+        .role-block .prefix-label {
+            color: var(--secondary-text);
+        }
+
+        .role-block .role-value,
+        .role-block .prefix-value {
+            font-weight: 600;
+        }
+
+        .lit-energy .lightning {
+            color: #1e90ff;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+        }
+
+        .tiktok .skull {
+            color: #ff4444;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .broyashka .trident {
+            color: #daa520;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(218, 165, 32, 0.5);
+        }
+
+        .funpay .volcano {
+            color: #ff4500;
+            font-size: 16px;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.5);
+        }
+
+        .sidebar-left .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .sidebar-left .menu a {
+            color: var(--secondary-text);
+            text-decoration: none;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .sidebar-left .menu a:hover {
+            background: rgba(30, 144, 255, 0.2);
+            color: var(--text-color);
+        }
+
+        .sidebar-left .menu a i {
+            font-size: 18px;
+        }
+
+        .profile-container {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .profile-details h2 {
+            font-size: 20px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-details h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .detail-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row label {
+            font-size: 14px;
+            color: var(--secondary-text);
+        }
+
+        .detail-row input {
+            background: #2a2a3c;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 10px;
+            color: var(--text-color);
+            font-size: 16px;
+            width: 100%;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .detail-row input:focus {
+            outline: none;
+            border: none;
+            box-shadow: 0 0 5px var(--accent-color);
+        }
+
+        .glow-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: var(--button-bg);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.5);
+        }
+
+        .glow-button:hover {
+            background: #0f7bff;
+            box-shadow: 0 0 15px rgba(30, 144, 255, 0.8);
+        }
+
+        .profile-info-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 40px;
+        }
+
+        .customization-section {
+            margin-top: 20px;
+        }
+
+        .customization-section h2 {
+            font-size: 20px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .customization-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .customization-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        .customization-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .color-options, .border-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .border-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            background: #2a2a3c;
+        }
+
+        .color-option:hover, .border-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+
+        .color-option.selected, .border-option.selected {
+            border: 2px solid var(--accent-color);
+        }
+
+        .color-option[data-color="dark-blue"] {
+            background: #1e1e32;
+        }
+
+        .color-option[data-color="very-dark-blue"] {
+            background: #141426;
+        }
+
+        .color-option[data-color="dark-purple"] {
+            background: #2a1e3c;
+        }
+
+        .border-option[data-border="solid"] {
+            border: 2px solid var(--accent-color);
+        }
+
+        .border-option[data-border="dashed"] {
+            border: 2px dashed var(--accent-color);
+        }
+
+        .border-option[data-border="dotted"] {
+            border: 2px dotted var(--accent-color);
+        }
+
+        .custom-color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .custom-color-picker input[type="color"] {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: none;
+            cursor: pointer;
+            background: none;
+        }
+
+        .custom-color-picker input[type="color"]::-webkit-color-swatch {
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .custom-color-picker input[type="color"]::-moz-color-swatch {
+            border: 2px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        /* Стили для модального окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 350px;
+            background: linear-gradient(45deg, var(--card-bg), #2a2a3c);
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.3), 0 0 40px rgba(30, 144, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(30, 144, 255, 0.5), 0 0 50px rgba(30, 144, 255, 0.2);
+        }
+
+        .modal-content h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px var(--glow-color);
+            animation: glowText 2s ease-in-out infinite;
+        }
+
+        @keyframes glowText {
+            0%, 100% { text-shadow: 0 0 10px var(--glow-color); }
+            50% { text-shadow: 0 0 20px var(--glow-color), 0 0 30px var(--accent-color); }
+        }
+
+        .prefix-button {
+            width: 100%;
+            padding: 15px;
+            margin: 8px 0;
+            background: linear-gradient(45deg, #2a2a3c, #3a3a4c);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-color);
+            font-size: 18px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 400;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(30, 144, 255, 0.2);
+        }
+
+        .prefix-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(30, 144, 255, 0.5), 0 0 30px rgba(30, 144, 255, 0.3);
+        }
+
+        .prefix-button:active {
+            transform: translateY(0);
+            box-shadow: 0 0 5px rgba(30, 144, 255, 0.2);
+        }
+
+        .prefix-button.red {
+            color: #ff5555;
+            background: linear-gradient(45deg, #2a1e1e, #3c2a2a);
+            border-color: #ff5555;
+            box-shadow: 0 0 10px rgba(255, 85, 85, 0.2);
+        }
+
+        .prefix-button.red:hover {
+            box-shadow: 0 0 20px rgba(255, 85, 85, 0.5), 0 0 30px rgba(255, 85, 85, 0.3);
+        }
+
+        .prefix-button.green {
+            color: #55ff55;
+            background: linear-gradient(45deg, #1e2a1e, #2a3c2a);
+            border-color: #55ff55;
+            box-shadow: 0 0 10px rgba(85, 255, 85, 0.2);
+        }
+
+        .prefix-button.green:hover {
+            box-shadow: 0 0 20px rgba(85, 255, 85, 0.5), 0 0 30px rgba(85, 255, 85, 0.3);
+        }
+
+        .prefix-button.lit-energy {
+            color: var(--yellow-color);
+            background: linear-gradient(45deg, #3c3c1e, #4c4c2a);
+            border-color: var(--yellow-color);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .prefix-button.lit-energy:hover {
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .prefix-button.tiktok {
+            color: var(--text-color);
+            background: linear-gradient(45deg, #2a2a3c, #3a3a4c);
+            border-color: #ff4444;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.2);
+        }
+
+        .prefix-button.tiktok:hover {
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5), 0 0 30px rgba(255, 68, 68, 0.3);
+        }
+
+        .prefix-button.broyashka {
+            color: var(--text-color);
+            background: linear-gradient(45deg, #2a2a3c, #3a3a4c);
+            border-color: #daa520;
+            box-shadow: 0 0 10px rgba(218, 165, 32, 0.2);
+        }
+
+        .prefix-button.broyashka:hover {
+            box-shadow: 0 0 20px rgba(218, 165, 32, 0.5), 0 0 30px rgba(218, 165, 32, 0.3);
+        }
+
+        .prefix-button.funpay {
+            color: var(--text-color);
+            background: linear-gradient(45deg, #2a2a3c, #3a3a4c);
+            border-color: #ff4500;
+            box-shadow: 0 0 10px rgba(255, 69, 0, 0.2);
+        }
+
+        .prefix-button.funpay:hover {
+            box-shadow: 0 0 20px rgba(255, 69, 0, 0.5), 0 0 30px rgba(255, 69, 0, 0.3);
+        }
+
+        .close-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #ff4444;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+        }
+
+        .close-button:hover {
+            background: #e03c3c;
+            box-shadow: 0 0 15px rgba(255, 68, 68, 0.8);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 80px 15px 30px;
+            }
+
+            .navbar {
+                padding: 15px 30px;
+            }
+
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: rgba(20, 20, 40, 0.95);
+                width: 100%;
+                padding: 20px 0;
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .hamburger {
+                display: block;
+            }
+
+            .main-container {
+                flex-direction: column;
+                margin-top: 40px;
+            }
+
+            .sidebar-left {
+                width: 100%;
+            }
+
+            .modal-content {
+                max-width: 90%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">
+            <i class="fas fa-fire logo-icon"></i>
+            <span class="logo-text">EscudoLoader</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Главная</a>
+            <a href="#">Товары</a>
+            <a href="#">FAQ</a>
+        </div>
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="sidebar-left" id="sidebar-left">
+            <div class="profile-header">
+                <div class="profile-avatar" id="avatar-container">
+                    <img src="https://i.gifer.com/origin/47/471d8577880f16c91540075608a919cd_w200.webp" alt="Default Avatar">
+                    <input type="file" id="avatar-input" accept="image/*" class="avatar-input">
+                </div>
+                <div class="profile-info">
+                    <h1 id="username-display">Ridze12</h1>
+                    <div class="role-block">
+                        <div class="role-row">
+                            <i class="fas fa-user-tag"></i>
+                            <span class="role-label">Роль</span>
+                            <span class="role-value">Пользователь</span>
+                        </div>
+                        <div class="prefix-row">
+                            <i class="fas fa-tag"></i>
+                            <span class="prefix-label">Префикс</span>
+                            <span class="prefix-value" id="prefix-display">Не выбран</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu">
+                <a href="#"><i class="fas fa-user"></i> Профиль</a>
+                <a href="#" onclick="alert('В разработке');"><i class="fas fa-eye"></i> Мои отзывы</a>
+                <a href="#"><i class="fas fa-download"></i> Мои загрузки</a>
+            </div>
+        </div>
+        <div class="profile-container" id="profile-container">
+            <div class="profile-details">
+                <h2>Информация профиля</h2>
+                <div class="profile-info-bottom">
+                    <div class="detail-row">
+                        <label>Имя пользователя</label>
+                        <input type="text" id="username-input" value="Ridze12">
+                    </div>
+                    <a href="#" class="glow-button" id="save-changes">Сохранить изменения</a>
+                    <a href="#" class="glow-button" id="open-prefixes">Префиксы</a>
+                </div>
+                <div class="customization-section">
+                    <h2>Кастомизация профиля</h2>
+                    <div class="customization-options">
+                        <div class="customization-block">
+                            <label>Цвет фона профиля</label>
+                            <div class="color-options">
+                                <div class="color-option" data-color="dark-blue"></div>
+                                <div class="color-option" data-color="very-dark-blue"></div>
+                                <div class="color-option" data-color="dark-purple"></div>
+                                <div class="custom-color-picker">
+                                    <input type="color" id="custom-color" title="Выбрать свой цвет">
+                                </div>
+                            </div>
+                            <label style="margin-top: 10px;">Стиль границы</label>
+                            <div class="border-options">
+                                <div class="border-option" data-border="solid"></div>
+                                <div class="border-option" data-border="dashed"></div>
+                                <div class="border-option" data-border="dotted"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для выбора префиксов -->
+    <div class="modal" id="prefix-modal">
+        <div class="modal-content">
+            <h1>Префиксы</h1>
+            <button class="prefix-button lit-energy">LIT<span class="lightning">⚡</span>ENERGY</button>
+            <button class="prefix-button tiktok"><span class="skull">☠️</span>Tik Tok<span class="skull">☠️</span></button>
+            <button class="prefix-button broyashka"><span class="trident">🔱</span> ФАНАТ БРОЯШКИ <span class="trident">🔱</span></button>
+            <button class="prefix-button funpay">FunPay <span class="volcano">🌋</span></button>
+            <button class="prefix-button">я крутой</button>
+            <button class="prefix-button red">неудачник</button>
+            <a href="#" class="close-button" id="close-modal">Закрыть</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+            const saveButton = document.querySelector('#save-changes');
+            const usernameInput = document.querySelector('#username-input');
+            const usernameDisplay = document.querySelector('#username-display');
+            const avatarInput = document.querySelector('#avatar-input');
+            const avatarContainer = document.querySelector('#avatar-container');
+            const prefixDisplay = document.querySelector('#prefix-display');
+            const openPrefixesButton = document.querySelector('#open-prefixes');
+            const prefixModal = document.querySelector('#prefix-modal');
+            const closeModalButton = document.querySelector('#close-modal');
+            const profileContainer = document.querySelector('#profile-container');
+            const sidebarLeft = document.querySelector('#sidebar-left');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const borderOptions = document.querySelectorAll('.border-option');
+            const customColorPicker = document.querySelector('#custom-color');
+
+            // Load saved data from localStorage
+            const savedUsername = localStorage.getItem('username');
+            const savedAvatar = localStorage.getItem('avatar');
+            const savedPrefix = localStorage.getItem('selectedPrefix');
+            const savedProfileColor = localStorage.getItem('profileColor');
+            const savedBorderStyle = localStorage.getItem('borderStyle');
+
+            if (savedUsername) {
+                usernameInput.value = savedUsername;
+                usernameDisplay.textContent = savedUsername;
+            }
+            if (savedAvatar) {
+                avatarContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = savedAvatar;
+                avatarContainer.appendChild(img);
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.id = 'avatar-input';
+                input.accept = 'image/*';
+                input.className = 'avatar-input';
+                avatarContainer.appendChild(input);
+                const newAvatarInput = document.querySelector('#avatar-input');
+                newAvatarInput.addEventListener('change', handleAvatarChange);
+            } else {
+                // Set default avatar
+                avatarContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = 'https://i.gifer.com/origin/47/471d8577880f16c91540075608a919cd_w200.webp';
+                img.alt = 'Default Avatar';
+                avatarContainer.appendChild(img);
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.id = 'avatar-input';
+                input.accept = 'image/*';
+                input.className = 'avatar-input';
+                avatarContainer.appendChild(input);
+                const newAvatarInput = document.querySelector('#avatar-input');
+                newAvatarInput.addEventListener('change', handleAvatarChange);
+            }
+
+            // Load and display the selected prefix
+            if (savedPrefix) {
+                prefixDisplay.innerHTML = savedPrefix;
+            } else {
+                prefixDisplay.textContent = 'Не выбран';
+            }
+
+            // Load profile customization
+            if (savedProfileColor) {
+                profileContainer.style.background = savedProfileColor;
+                sidebarLeft.style.background = savedProfileColor;
+                colorOptions.forEach(option => {
+                    if (option.dataset.color === savedProfileColor) {
+                        option.classList.add('selected');
+                    }
+                });
+            }
+            if (savedBorderStyle) {
+                profileContainer.style.borderStyle = savedBorderStyle;
+                sidebarLeft.style.borderStyle = savedBorderStyle;
+                borderOptions.forEach(option => {
+                    if (option.dataset.border === savedBorderStyle) {
+                        option.classList.add('selected');
+                    }
+                });
+            }
+
+            // Открытие модального окна
+            openPrefixesButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                prefixModal.style.display = 'flex';
+            });
+
+            // Закрытие модального окна
+            closeModalButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                prefixModal.style.display = 'none';
+            });
+
+            // Закрытие модального окна при клике вне контента
+            prefixModal.addEventListener('click', (e) => {
+                if (e.target === prefixModal) {
+                    prefixModal.style.display = 'none';
+                }
+            });
+
+            // Обработчик выбора префикса
+            const prefixButtons = document.querySelectorAll('.prefix-button');
+            prefixButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const prefixText = button.innerHTML;
+                    localStorage.setItem('selectedPrefix', prefixText);
+                    prefixDisplay.innerHTML = prefixText;
+                    prefixModal.style.display = 'none';
+                    alert('Префикс "' + button.textContent + '" выбран!');
+                });
+            });
+
+            // Обработчик выбора цвета профиля
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    colorOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    const color = option.dataset.color;
+                    let backgroundColor;
+                    if (color === 'dark-blue') backgroundColor = '#1e1e32';
+                    else if (color === 'very-dark-blue') backgroundColor = '#141426';
+                    else if (color === 'dark-purple') backgroundColor = '#2a1e3c';
+                    profileContainer.style.background = backgroundColor;
+                    sidebarLeft.style.background = backgroundColor;
+                    localStorage.setItem('profileColor', backgroundColor);
+                });
+            });
+
+            // Обработчик выбора пользовательского цвета
+            customColorPicker.addEventListener('input', () => {
+                colorOptions.forEach(opt => opt.classList.remove('selected'));
+                const customColor = customColorPicker.value;
+                profileContainer.style.background = customColor;
+                sidebarLeft.style.background = customColor;
+                localStorage.setItem('profileColor', customColor);
+            });
+
+            // Обработчик выбора стиля границы
+            borderOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    borderOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    const borderStyle = option.dataset.border;
+                    profileContainer.style.borderStyle = borderStyle;
+                    sidebarLeft.style.borderStyle = borderStyle;
+                    localStorage.setItem('borderStyle', borderStyle);
+                });
+            });
+
+            saveButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                const newUsername = usernameInput.value.trim();
+                if (newUsername) {
+                    usernameDisplay.textContent = newUsername;
+                    localStorage.setItem('username', newUsername);
+                }
+            });
+
+            avatarContainer.addEventListener('click', () => {
+                avatarInput.click();
+            });
+
+            function handleAvatarChange(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        const imageData = event.target.result;
+                        avatarContainer.innerHTML = '';
+                        const img = document.createElement('img');
+                        img.src = imageData;
+                        img.alt = 'User Avatar';
+                        avatarContainer.appendChild(img);
+                        localStorage.setItem('avatar', imageData);
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.id = 'avatar-input';
+                        input.accept = 'image/*';
+                        input.className = 'avatar-input';
+                        avatarContainer.appendChild(input);
+                        const newAvatarInput = document.querySelector('#avatar-input');
+                        newAvatarInput.addEventListener('change', handleAvatarChange);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            avatarInput.addEventListener('change', handleAvatarChange);
+        });
+    </script>
+</body>
+</html>

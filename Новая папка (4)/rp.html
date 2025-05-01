@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EscudoLoader - Ресурспаки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #0f0f1a;
+            --card-bg: rgba(30, 30, 50, 0.85);
+            --text-color: #e0e0e0;
+            --secondary-text: #b0b0b0;
+            --border-color: rgba(255, 255, 255, 0.15);
+            --glow-color: rgba(100, 150, 255, 0.6);
+            --primary-color: #64a6ff;
+            --secondary-color: #4b7bff;
+            --popup-bg: rgba(30, 30, 50, 0.95);
+            --accent-gradient: linear-gradient(90deg, #4b7bff, #64a6ff);
+            --card-gradient: linear-gradient(135deg, rgba(30, 30, 50, 0.85), rgba(50, 50, 80, 0.85));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: linear-gradient(45deg, #0f0f1a, #1c1c2a, #0f0f1a);
+            background-size: 400%;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding: 100px 20px 40px;
+            animation: gradientShift 15s ease infinite, fadeIn 1.5s ease forwards;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        canvas#particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 60px;
+            background: rgba(20, 20, 40, 0.9);
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.7);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 15px var(--glow-color);
+        }
+
+        .navbar .logo .logo-icon {
+            font-size: 34px;
+            margin-right: 12ynthesizedpx;
+            color: var(--secondary-color);
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .navbar .logo .logo-icon:hover {
+            transform: rotate(360deg);
+            color: var(--primary-color);
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 25px;
+            font-size: 16px;
+            font-weight: 400;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .navbar .hamburger {
+            display: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 28px;
+        }
+
+        .account-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .account-button {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 400;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .account-button:hover {
+            color: var(--primary-color);
+        }
+
+        .account-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--popup-bg);
+            border-radius: 8px;
+            width: 160px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+            z-index: 11;
+            animation: dropdownFade 0.3s ease;
+        }
+
+        .account-dropdown.active {
+            display: block;
+        }
+
+        @keyframes dropdownFade {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .account-option {
+            padding: 12px 15px;
+            font-size: 14px;
+            color: var(--text-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            transition: background 0.3s ease;
+        }
+
+        .account-option:hover {
+            background: rgba(100, 150, 255, 0.2);
+        }
+
+        .cheat-blocks-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            max-width: 1000px;
+            margin: 50px auto;
+        }
+
+        .cheat-block {
+            background: var(--card-gradient);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7), 0 0 10px var(--glow-color);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            animation: slideUp 1s ease forwards;
+        }
+
+        .cheat-block:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.8), 0 0 15px var(--glow-color);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cheat-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+            transition: transform 0.4s ease;
+        }
+
+        .cheat-block:hover .cheat-image {
+            transform: scale(1.03);
+        }
+
+        .cheat-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        .cheat-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .cheat-meta {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            color: var(--text-color);
+        }
+
+        .cheat-meta i {
+            margin-right: 6px;
+            color: var(--primary-color);
+        }
+
+        .cheat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-shadow: 0 0 8px var(--glow-color);
+        }
+
+        .cheat-description {
+            font-size: 12px;
+            color: var(--secondary-text);
+            line-height: 1.4;
+        }
+
+        .download-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #fff;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px var(--glow-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .download-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        .popup-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--popup-bg);
+            border-radius: 14px;
+            width: 360px;
+            max-width: 90%;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+            z-index: 101;
+            animation: popupFade 0.4s ease;
+        }
+
+        .popup-panel.active {
+            display: block;
+        }
+
+        @keyframes popupFade {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .blur-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+        }
+
+        .blur-overlay.active {
+            display: block;
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--accent-gradient);
+            border-radius: 14px 14px 0 0;
+        }
+
+        .popup-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .popup-close {
+            font-size: 22px;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .popup-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .popup-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .popup-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .popup-details h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+
+        .login-input {
+            padding: 10px;
+            font-size: 14px;
+            color: var(--text-color);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-color);
+            border-radius: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .login-input:focus {
+            border-color: var(--glow-color);
+            box-shadow: 0 0 10px var(--glow-color);
+        }
+
+        .error-message {
+            color: #ff5555;
+            font-size: 12px;
+            display: none;
+            margin-top: 6px;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .popup-download-button {
+            padding: 10px;
+            font-size: 14px;
+            color: #fff;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px var(--glow-color);
+            margin-top: 8px;
+        }
+
+        .popup-download-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 80px 15px 30px;
+            }
+
+            .navbar {
+                padding: 15px 30px;
+            }
+
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: rgba(20, 20, 40, 0.95);
+                width: 100%;
+                padding: 20px 0;
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .hamburger {
+                display: block;
+            }
+
+            .cheat-block {
+                width: 100%;
+                max-width: none;
+            }
+
+            .cheat-title {
+                font-size: 16px;
+            }
+
+            .cheat-meta-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .download-button {
+                width: 100%;
+            }
+
+            .account-dropdown {
+                width: 100%;
+                right: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cheat-image {
+                height: 140px;
+            }
+
+            .cheat-title {
+                font-size: 14px;
+            }
+
+            .cheat-description {
+                font-size: 11px;
+            }
+
+            .download-button {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    <div class="navbar">
+        <div class="logo">
+            <i class="fas fa-fire logo-icon"></i>
+            <span class="logo-text">EscudoLoader</span>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Главная</a>
+            <a href="#">Товары</a>
+            <a href="#">FAQ</a>
+            <div class="account-menu">
+                <div class="account-button" id="accountButton">
+                    <i class="fas fa-user"></i>
+                    <span>Аккаунт</span>
+                </div>
+                <div class="account-dropdown" id="accountDropdown">
+                    <button class="account-option" id="loginOption">Вход</button>
+                    <button class="account-option" id="profileOption" style="display: none;">Профиль</button>
+                </div>
+            </div>
+        </div>
+        <div class="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+    <div class="blur-overlay" id="blurOverlay"></div>
+    <div class="popup-panel" id="loginPopup">
+        <div class="popup-header">
+            <h2>Вход</h2>
+            <span class="popup-close" id="closeLoginPopup">✖</span>
+        </div>
+        <div class="popup-content">
+            <div class="popup-details">
+                <h3>Введите ключ</h3>
+                <input type="text" class="login-input" id="keyInput" placeholder="XXXX-XXXX-XXXX-XXXX">
+                <p class="error-message" id="errorMessage">Неверный ключ или ключ уже использован</p>
+                <button class="popup-download-button" id="submitKey">Войти</button>
+            </div>
+        </div>
+    </div>
+    <div class="cheat-blocks-container">
+        <div class="cheat-block">
+            <img src="https://media.discordapp.net/attachments/1332169934251233300/1367035799425650738/1.16.5_Screenshot_2025.04.23_-_19.58.11.99.png?ex=6813c78c&is=6812760c&hm=e1de3911b1b2fc62017d1a8d9da433fdd6810efb77f4b8b3140c9310215e3a26&=&format=webp&quality=lossless&width=1423&height=800" alt="Rp Японца Preview" class="cheat-image">
+            <div class="cheat-content">
+                <div class="cheat-meta-row">
+                    <div class="cheat-meta">
+                        <span><i class="fas fa-calendar-alt"></i>01.05.2025</span>
+                    </div>
+                    <a href="#" class="download-button">Скачать</a>
+                </div>
+                <h2 class="cheat-title">Rp Японца</h2>
+                <p class="cheat-description">Довольно хороший рп</p>
+            </div>
+        </div>
+        <div class="cheat-block">
+            <img src="https://media.discordapp.net/attachments/1332169934251233300/1346023279848198266/image.png?ex=6813cd1d&is=68127b9d&hm=a86587046433910c3b4684b8dd743a4e01d47b381e29e661c256370f549abe30&=&format=webp&quality=lossless&width=1240&height=930" alt="РП БРАВО синий Preview" class="cheat-image">
+            <div class="cheat-content">
+                <div class="cheat-meta-row">
+                    <div class="cheat-meta">
+                        <span><i class="fas fa-calendar-alt"></i>01.05.2025</span>
+                    </div>
+                    <a href="#" class="download-button">Скачать</a>
+                </div>
+                <h2 class="cheat-title">РП БРАВО синий</h2>
+                <p class="cheat-description">Один из лучших рп</p>
+            </div>
+        </div>
+        <div class="cheat-block">
+            <img src="https://media.discordapp.net/attachments/1332169934251233300/1332263980743393280/image-4.png?ex=6813d7c5&is=68128645&hm=42efb5b5f639f883c8a468d0dcd0ceba748b5fe7f702051c24f2b65026aa502c&=&format=webp&quality=lossless&width=1436&height=800" alt="BLACK РП Preview" class="cheat-image">
+            <div class="cheat-content">
+                <div class="cheat-meta-row">
+                    <div class="cheat-meta">
+                        <span><i class="fas fa-calendar-alt"></i>01.05.2025</span>
+                    </div>
+                    <a href="#" class="download-button">Скачать</a>
+                </div>
+                <h2 class="cheat-title">BLACK РП</h2>
+                <p class="cheat-description">Популярный рп и очень красивый</p>
+            </div>
+        </div>
+        <div class="cheat-block">
+            <img src="https://media.discordapp.net/attachments/1274004876837392568/1367396222335193108/53B94CA0-EA40-4C20-9C01-52378B6DB482.png?ex=68146e78&is=68131cf8&hm=334579317bc685799661172339d4f065a468cd94ff2445277f1592d4b4d31cba&=&format=webp&quality=lossless&width=1490&height=674" alt="НЕСПРАВЕДЛИВОСТЬ Preview" class="cheat-image">
+            <div class="cheat-content">
+                <div class="cheat-meta-row">
+                    <div class="cheat-meta">
+                        <span><i class="fas fa-calendar-alt"></i>01.05.2025</span>
+                    </div>
+                    <a href="#" class="download-button">Скачать</a>
+                </div>
+                <h2 class="cheat-title">НЕСПРАВЕДЛИВОСТЬ</h2>
+                <p class="cheat-description">Мемный рп и довольно прикольный</p>
+            </div>
+        </div>
+        <div class="cheat-block">
+            <img src="https://cdn.discordapp.com/attachments/1274004876837392568/1367398908615069800/66BBB385-4AE1-4C85-8D91-4A29894AD749.png?ex=681470f8&is=68131f78&hm=a92f3408a0b6762aa608b04c5671ac2922fd4eefc4f7833accd92a12627df832&" alt="ebanat99 Preview" class="cheat-image">
+            <div class="cheat-content">
+                <div class="cheat-meta-row">
+                    <div class="cheat-meta">
+                        <span><i class="fas fa-calendar-alt"></i>01.05.2025</span>
+                    </div>
+                    <a href="#" class="download-button">Скачать</a>
+                </div>
+                <h2 class="cheat-title">ebanat99</h2>
+                <p class="cheat-description">Популярный рп и очень красивый</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const particleCount = 60;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 1,
+                    dx: (Math.random() - 0.5) * 0.6,
+                    dy: (Math.random() - 0.5) * 0.6
+                });
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.dx;
+                    p.y += p.dy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(100, 150, 255, 0.6)';
+                    ctx.fill();
+                });
+
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(100, 150, 255, ${1 - distance / 100})`;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            });
+
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            hamburger.addEventListener('click', () => navLinks.classList.toggle('active'));
+
+            const accountButton = document.getElementById('accountButton');
+            const accountDropdown = document.getElementById('accountDropdown');
+            const loginOption = document.getElementById('loginOption');
+            const profileOption = document.getElementById('profileOption');
+            accountButton.addEventListener('click', () => accountDropdown.classList.toggle('active'));
+
+            document.addEventListener('click', (event) => {
+                if (!accountButton.contains(event.target) && !accountDropdown.contains(event.target)) {
+                    accountDropdown.classList.remove('active');
+                }
+            });
+
+            const loginPopup = document.getElementById('loginPopup');
+            const closeLoginPopup = document.getElementById('closeLoginPopup');
+            const blurOverlay = document.getElementById('blurOverlay');
+            const submitKey = document.getElementById('submitKey');
+            const keyInput = document.getElementById('keyInput');
+            const errorMessage = document.getElementById('errorMessage');
+
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (isLoggedIn) {
+                loginOption.style.display = 'none';
+                profileOption.style.display = 'block';
+            } else {
+                loginOption.style.display = 'block';
+                profileOption.style.display = 'none';
+            }
+
+            loginOption.addEventListener('click', () => {
+                loginPopup.classList.add('active');
+                blurOverlay.classList.add('active');
+                accountDropdown.classList.remove('active');
+            });
+
+            profileOption.addEventListener('click', () => {
+                window.location.href = 'profile.html';
+                accountDropdown.classList.remove('active');
+            });
+
+            closeLoginPopup.addEventListener('click', () => {
+                loginPopup.classList.remove('active');
+                blurOverlay.classList.remove('active');
+                keyInput.value = '';
+                errorMessage.classList.remove('active');
+            });
+
+            blurOverlay.addEventListener('click', () => {
+                loginPopup.classList.remove('active');
+                blurOverlay.classList.remove('active');
+                keyInput.value = '';
+                errorMessage.classList.remove('active');
+            });
+
+            const validKeys = [
+                'escude-1LUv-OXsmyIK7K-dpCT6PUIA',
+                'escude-B0JwH-6ROtZOO-ammxwliIOB',
+                'escude-58GPWnC-9TdhlCy1o-zDa2UC',
+                'escude-0Sk9jwq-BkdVE5hAKv-DY2mD',
+                'escude-lo7zuVt-XQv7jstRk-2nvPgE',
+                'escude-9bsMOV-lE93j1L5y-QS2huuF',
+                'escude-RF8wx-utiYydF01-xf0exkGG',
+                'escude-0f8iMO-KUURMA-T5RaZXtLRH',
+                'escude-98qNN2zP-II8BcnniQ-edDWI',
+                'escude-ZZCjLLV-VFm6c51k-9251EjJ',
+                'escude-eF5UhH7-GrI3KbOz-HBJ40XK',
+                'escude-glln0-n2gY3STw8ktf-vGLML',
+                'escude-YBrCzGx-K1ehf6GC-UpWSTrM',
+                'escude-GiyN-xZKbZuwz-f6uvds9AN',
+                'escude-D70C-pWNOQolf5SlS5-t21VO'
+            ];
+
+            let usedKeys = JSON.parse(localStorage.getItem('usedKeys')) || [];
+
+            submitKey.addEventListener('click', () => {
+                const enteredKey = keyInput.value.trim();
+                if (validKeys.includes(enteredKey) && !usedKeys.includes(enteredKey)) {
+                    usedKeys.push(enteredKey);
+                    localStorage.setItem('usedKeys', JSON.stringify(usedKeys));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    loginOption.style.display = 'none';
+                    profileOption.style.display = 'block';
+                    alert('Вход выполнен успешно!');
+                    loginPopup.classList.remove('active');
+                    blurOverlay.classList.remove('active');
+                    keyInput.value = '';
+                    errorMessage.classList.remove('active');
+                } else {
+                    errorMessage.textContent = validKeys.includes(enteredKey) ? 'Ключ уже использован' : 'Неверный ключ';
+                    errorMessage.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
